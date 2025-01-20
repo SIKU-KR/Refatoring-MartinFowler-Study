@@ -26,7 +26,7 @@ public class Statement {
             result += "청구 내역 (고객명: " + invoice.getCustomer() + ")\n";
             for (Performance performance : performances) {
                 {
-                    int thisAmount = amountFor(performance, playFor(performance));
+                    int thisAmount = amountFor(performance);
                     // 포인트를 적립한다.
                     volumeCredits += Math.max(performance.getAudience() - 30, 0);
                     // 희극 관객 5명마다 추가 포인트를 적립한다.
@@ -44,9 +44,9 @@ public class Statement {
         return result;
     }
 
-    private int amountFor(Performance aPerformance, Play play) {
+    private int amountFor(Performance aPerformance) {
         int result = 0;
-        switch (play.getType()) {
+        switch (playFor(aPerformance).getType()) {
             case "tragedy":
                 result = 40000;
                 if (aPerformance.getAudience() > 30) {
@@ -61,7 +61,7 @@ public class Statement {
                 result += 300 * aPerformance.getAudience();
                 break;
             default:
-                throw new IllegalArgumentException("알 수 없는 장르: " + play.getType());
+                throw new IllegalArgumentException("알 수 없는 장르: " + playFor(aPerformance).getType());
         }
         return result;
     }
