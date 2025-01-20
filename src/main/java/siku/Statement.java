@@ -26,16 +26,15 @@ public class Statement {
             result += "청구 내역 (고객명: " + invoice.getCustomer() + ")\n";
             for (Performance performance : performances) {
                 {
-                    Play play = playFor(performance);
-                    int thisAmount = amountFor(performance, play);
+                    int thisAmount = amountFor(performance, playFor(performance));
                     // 포인트를 적립한다.
                     volumeCredits += Math.max(performance.getAudience() - 30, 0);
                     // 희극 관객 5명마다 추가 포인트를 적립한다.
-                    if ("comedy".equals(play.getType())) {
+                    if ("comedy".equals(playFor(performance).getType())) {
                         volumeCredits += Math.floorDiv(performance.getAudience(), 5);
                     }
                     // 청구 내역을 출력한다.
-                    result += "  " + play.getName() + ": $" + String.format("%.2f", thisAmount / 100.0) + " (" + performance.getAudience() + "석)\n";
+                    result += "  " + playFor(performance).getName() + ": $" + String.format("%.2f", thisAmount / 100.0) + " (" + performance.getAudience() + "석)\n";
                     totalAmount += thisAmount;
                 }
             }
