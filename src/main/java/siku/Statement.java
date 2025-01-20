@@ -9,6 +9,28 @@ import java.util.List;
 
 public class Statement {
 
+    private int amountFor(Performance performance, Play play) {
+        int result = 0;
+        switch (play.getType()) {
+            case "tragedy":
+                result = 40000;
+                if (performance.getAudience() > 30) {
+                    result += 1000 * (performance.getAudience() - 30);
+                }
+                break;
+            case "comedy":
+                result = 30000;
+                if (performance.getAudience() > 20) {
+                    result += 10000 + 500 * (performance.getAudience() - 20);
+                }
+                result += 300 * performance.getAudience();
+                break;
+            default:
+                throw new IllegalArgumentException("알 수 없는 장르: " + play.getType());
+        }
+        return result;
+    }
+
     public String run(List<Invoice> invoices, HashMap<String, Play> plays){
         String result = "";
         int totalAmount = 0;
@@ -19,24 +41,7 @@ public class Statement {
             for (Performance performance : performances) {
                 {
                     Play play = plays.get(performance.getPlayID());
-                    int thisAmount = 0;
-                    switch (play.getType()) {
-                        case "tragedy":
-                            thisAmount = 40000;
-                            if (performance.getAudience() > 30) {
-                                thisAmount += 1000 * (performance.getAudience() - 30);
-                            }
-                            break;
-                        case "comedy":
-                            thisAmount = 30000;
-                            if (performance.getAudience() > 20) {
-                                thisAmount += 10000 + 500 * (performance.getAudience() - 20);
-                            }
-                            thisAmount += 300 * performance.getAudience();
-                            break;
-                        default:
-                            throw new IllegalArgumentException("알 수 없는 장르: " + play.getType());
-                    }
+                    int thisAmount = amountFor(performance, play);
                     // 포인트를 적립한다.
                     volumeCredits += Math.max(performance.getAudience() - 30, 0);
                     // 희극 관객 5명마다 추가 포인트를 적립한다.
