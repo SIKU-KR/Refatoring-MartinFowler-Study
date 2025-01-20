@@ -17,7 +17,7 @@ public class Statement {
         this.plays = plays;
     }
 
-    public String run(){
+    public String run() {
         String result = "";
         int totalAmount = 0;
         int volumeCredits = 0;
@@ -28,11 +28,11 @@ public class Statement {
                 {
                     volumeCredits += volumeCreditsFor(performance);
                     // 청구 내역을 출력한다.
-                    result += "  " + playFor(performance).getName() + ": $" + String.format("%.2f", amountFor(performance) / 100.0) + " (" + performance.getAudience() + "석)\n";
+                    result += "  " + playFor(performance).getName() + ": $" + usd(amountFor(performance)) + " (" + performance.getAudience() + "석)\n";
                     totalAmount += amountFor(performance);
                 }
             }
-            result += "총액: $" + String.format("%.2f", totalAmount / 100.0) + "\n";
+            result += "총액: $" + usd(totalAmount) + "\n";
             result += "적립 포인트: " + volumeCredits + "점\n";
         }
         return result;
@@ -71,5 +71,9 @@ public class Statement {
             result += Math.floorDiv(aPerformance.getAudience(), 5);
         }
         return result;
+    }
+
+    private String usd(double amount) {
+        return String.format("%.2f", amount / 100.0);
     }
 }
