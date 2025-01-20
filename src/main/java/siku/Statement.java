@@ -9,29 +9,15 @@ import java.util.List;
 
 public class Statement {
 
-    private int amountFor(Performance performance, Play play) {
-        int result = 0;
-        switch (play.getType()) {
-            case "tragedy":
-                result = 40000;
-                if (performance.getAudience() > 30) {
-                    result += 1000 * (performance.getAudience() - 30);
-                }
-                break;
-            case "comedy":
-                result = 30000;
-                if (performance.getAudience() > 20) {
-                    result += 10000 + 500 * (performance.getAudience() - 20);
-                }
-                result += 300 * performance.getAudience();
-                break;
-            default:
-                throw new IllegalArgumentException("알 수 없는 장르: " + play.getType());
-        }
-        return result;
+    List<Invoice> invoices;
+    HashMap<String, Play> plays;
+
+    public Statement(List<Invoice> invoices, HashMap<String, Play> plays) {
+        this.invoices = invoices;
+        this.plays = plays;
     }
 
-    public String run(List<Invoice> invoices, HashMap<String, Play> plays){
+    public String run(){
         String result = "";
         int totalAmount = 0;
         int volumeCredits = 0;
@@ -40,7 +26,7 @@ public class Statement {
             result += "청구 내역 (고객명: " + invoice.getCustomer() + ")\n";
             for (Performance performance : performances) {
                 {
-                    Play play = plays.get(performance.getPlayID());
+                    Play play = playFor(performance);
                     int thisAmount = amountFor(performance, play);
                     // 포인트를 적립한다.
                     volumeCredits += Math.max(performance.getAudience() - 30, 0);
@@ -57,5 +43,31 @@ public class Statement {
             result += "적립 포인트: " + volumeCredits + "점\n";
         }
         return result;
+    }
+
+    private int amountFor(Performance aPerformance, Play play) {
+        int result = 0;
+        switch (play.getType()) {
+            case "tragedy":
+                result = 40000;
+                if (aPerformance.getAudience() > 30) {
+                    result += 1000 * (aPerformance.getAudience() - 30);
+                }
+                break;
+            case "comedy":
+                result = 30000;
+                if (aPerformance.getAudience() > 20) {
+                    result += 10000 + 500 * (aPerformance.getAudience() - 20);
+                }
+                result += 300 * aPerformance.getAudience();
+                break;
+            default:
+                throw new IllegalArgumentException("알 수 없는 장르: " + play.getType());
+        }
+        return result;
+    }
+
+    private Play playFor(Performance aPerformance) {
+        return this.plays.get(aPerformance.getPlayID());
     }
 }

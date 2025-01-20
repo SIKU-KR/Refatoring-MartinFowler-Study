@@ -10,9 +10,9 @@ class StatementTest {
     void testRun(){
         // given
         IO io = new IO("src/data/");
-        Statement statement = new Statement();
+        Statement statement = new Statement(io.readInvoices(), io.readPlays());
         // when
-        String result = statement.run(io.readInvoices(), io.readPlays());
+        String result = statement.run();
         // then
         assertTrue(result.contains("청구 내역 (고객명: BigCo)"));
         assertTrue(result.contains("Hamlet: $650.00 (55석)"));
