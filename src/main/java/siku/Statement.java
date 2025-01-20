@@ -65,11 +65,11 @@ public class Statement {
     }
 
     private int volumeCreditsFor(Performance aPerformance) {
-        int volumeCredits = 0;
-        volumeCredits += Math.max(aPerformance.getAudience() - 30, 0);
+        int result = 0;
+        result += Math.max(aPerformance.getAudience() - 30, 0);
         if ("comedy".equals(playFor(aPerformance).getType())) {
-            volumeCredits += Math.floorDiv(aPerformance.getAudience(), 5);
+            result += Math.floorDiv(aPerformance.getAudience(), 5);
         }
-        return volumeCredits;
+        return result;
     }
 }
