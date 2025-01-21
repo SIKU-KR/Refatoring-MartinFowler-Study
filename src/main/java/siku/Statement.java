@@ -18,17 +18,19 @@ public class Statement {
     }
 
     public String run() {
-        String result = "";
-        for (Invoice invoice : invoices) {
-            result += "청구 내역 (고객명: " + invoice.getCustomer() + ")\n";
-            for (Performance performance : invoice.getPerformances()) {
-                {
-                    result += "  " + playFor(performance).getName() + ": $" + usd(amountFor(performance)) + " (" + performance.getAudience() + "석)\n";
-                }
+        return renderPlainText();
+    }
+
+    private String renderPlainText() {
+        Invoice invoice = invoices.get(0);
+        String result = "청구 내역 (고객명: " + invoice.getCustomer() + ")\n";
+        for (Performance performance : invoice.getPerformances()) {
+            {
+                result += "  " + playFor(performance).getName() + ": $" + usd(amountFor(performance)) + " (" + performance.getAudience() + "석)\n";
             }
-            result += "총액: $" + usd(totalAmount(invoice.getPerformances())) + "\n";
-            result += "적립 포인트: " + totalVolumeCredits(invoice.getPerformances()) + "점\n";
         }
+        result += "총액: $" + usd(totalAmount(invoice.getPerformances())) + "\n";
+        result += "적립 포인트: " + totalVolumeCredits(invoice.getPerformances()) + "점\n";
         return result;
     }
 
@@ -49,7 +51,7 @@ public class Statement {
     }
 
     private int amountFor(Performance aPerformance) {
-        int result = 0;
+        int result;
         switch (playFor(aPerformance).getType()) {
             case "tragedy":
                 result = 40000;
