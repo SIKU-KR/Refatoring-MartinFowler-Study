@@ -19,21 +19,31 @@ public class Statement {
 
     public String run() {
         String result = "";
-        int totalAmount = 0;
-        int volumeCredits = 0;
         for (Invoice invoice : invoices) {
-            List<Performance> performances = invoice.getPerformances();
             result += "청구 내역 (고객명: " + invoice.getCustomer() + ")\n";
-            for (Performance performance : performances) {
+            for (Performance performance : invoice.getPerformances()) {
                 {
-                    volumeCredits += volumeCreditsFor(performance);
-                    // 청구 내역을 출력한다.
                     result += "  " + playFor(performance).getName() + ": $" + usd(amountFor(performance)) + " (" + performance.getAudience() + "석)\n";
-                    totalAmount += amountFor(performance);
                 }
             }
-            result += "총액: $" + usd(totalAmount) + "\n";
-            result += "적립 포인트: " + volumeCredits + "점\n";
+            result += "총액: $" + usd(totalAmount(invoice.getPerformances())) + "\n";
+            result += "적립 포인트: " + totalVolumeCredits(invoice.getPerformances()) + "점\n";
+        }
+        return result;
+    }
+
+    private int totalAmount(List<Performance> performances) {
+        int result = 0;
+        for (Performance performance : performances) {
+            result += amountFor(performance);
+        }
+        return result;
+    }
+
+    private int totalVolumeCredits(List<Performance> performances) {
+        int result = 0;
+        for (Performance performance : performances) {
+            result += volumeCreditsFor(performance);
         }
         return result;
     }
