@@ -3,34 +3,35 @@ package siku;
 import siku.domain.Invoice;
 import siku.domain.Performance;
 import siku.domain.Play;
+import siku.domain.StatementData;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class Statement {
 
-    List<Invoice> invoices;
     HashMap<String, Play> plays;
 
-    public Statement(List<Invoice> invoices, HashMap<String, Play> plays) {
-        this.invoices = invoices;
+    public Statement(HashMap<String, Play> plays) {
         this.plays = plays;
     }
 
-    public String run() {
-        return renderPlainText();
+    public String run(Invoice invoice) {
+        StatementData statementData = new StatementData();
+        statementData.setCustomer(invoice.getCustomer());
+        statementData.setPerformances(invoice.getPerformances());
+        return renderPlainText(statementData);
     }
 
-    private String renderPlainText() {
-        Invoice invoice = invoices.get(0);
-        String result = "청구 내역 (고객명: " + invoice.getCustomer() + ")\n";
-        for (Performance performance : invoice.getPerformances()) {
+    private String renderPlainText(StatementData statementData) {
+        String result = "청구 내역 (고객명: " + statementData.getCustomer() + ")\n";
+        for (Performance performance : statementData.getPerformances()) {
             {
                 result += "  " + playFor(performance).getName() + ": $" + usd(amountFor(performance)) + " (" + performance.getAudience() + "석)\n";
             }
         }
-        result += "총액: $" + usd(totalAmount(invoice.getPerformances())) + "\n";
-        result += "적립 포인트: " + totalVolumeCredits(invoice.getPerformances()) + "점\n";
+        result += "총액: $" + usd(totalAmount(statementData.getPerformances())) + "\n";
+        result += "적립 포인트: " + totalVolumeCredits(statementData.getPerformances()) + "점\n";
         return result;
     }
 
