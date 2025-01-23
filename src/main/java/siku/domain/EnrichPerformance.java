@@ -1,6 +1,7 @@
 package siku.domain;
 
-import siku.PerformanceCalculator;
+import siku.CalculatorFactory;
+import siku.calculator.PerformanceCalculator;
 
 import java.util.HashMap;
 
@@ -14,7 +15,7 @@ public class EnrichPerformance extends Performance{
         this.setPlayID(performance.getPlayID());
         this.setAudience(performance.getAudience());
         this.play = this.playFor(plays);
-        PerformanceCalculator calculator = new PerformanceCalculator(this);
+        PerformanceCalculator calculator = CalculatorFactory.createPerformanceCalculator(this);
         this.amount = calculator.amountFor();
         this.volumeCredits = calculator.volumeCreditsFor();
     }
