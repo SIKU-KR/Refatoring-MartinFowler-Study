@@ -2,6 +2,11 @@
 
 > 프로그램이 새로운 기능을 추가하기에 편한 구조가 아니라면, 먼저 기능을 추가하기 쉬운 형태로 리팩터링하고 나서 원하는 기능을 추가한다.
 
+> Tobi의 한 마디
+> 
+> 코드를 온전히 이해하고 있는 것이 아니라면, 리팩터링의 단위는 쪼갤수록 좋다.
+> 만약 긴 호흡의 리팩터링이 가능하다면, 그때는 커밋의 숫자를 줄여도 괜찮다.
+
 리팩토링이 필요한 이유는 **변경**때문이다. 잘 작동하고 나중에 변경할 일이 절대 없다면 코드를 현재 상태로 나둬도 아무 문제가 없다. 
 
 ### 리팩터링의 첫 단계
@@ -80,10 +85,64 @@ int thisAmount = amountFor(performance, playFor(performance));
 
 이전 코드는 루프를 한 번 돌 때마다 공연을 조회했는데 반해 리팩터링한 코드에서는 세 번이나 조회한다. 
 
+> 루프를 여러번 반복을 하는 것은 주니어 개발자 때 리뷰를 받으며 혼날 수 있다고 한다.
+> 
+> 사실 이 정도 반박하는 것은 정말 아무 것도 아니다. 오히려 리팩토링을 진행함에 있어 추출하기가 매우 쉬워지는 결과를 만들어낸다.
+> 
+> 성능에 관련된 부분은 2장에서 또 다룬다.
+
 여전히 심각한 성능 저하는 보통 발생하지 않으며, 이렇게 단순화된 코드는 훨씬 쉽게 성능개선이 가능하다. 
 
 지역 변수를 제거해서 얻는 가장 큰 장점은 추출 작업이 쉬워진다는 것이다. 유효범위를 신경 써야 할 대상이 줄어들기 때문이다. 
 
 **실제로 저자는 추출 작업 전에 거의 항상 지역변수부터 제거**한다.
 
+### 다형성을 활용하여 계산 코드 재구성하기
 
+```java
+private int amountFor() {
+    int result;
+    switch (getPlay().getType()) {
+        case "tragedy":
+            result = 40000;
+            if (getAudience() > 30) {
+                result += 1000 * (getAudience() - 30);
+            }
+            break;
+        case "comedy":
+            result = 30000;
+            if (getAudience() > 20) {
+                result += 10000 + 500 * (getAudience() - 20);
+            }
+            result += 300 * getAudience();
+            break;
+        default:
+            throw new IllegalArgumentException("알 수 없는 장르: " + this.play.getType());
+    }
+    return result;
+}
+```
+
+이 코드를 보면 연극 장르에 따라 계산 방식이 달라진다는 사실을 알 수 있는데, 이런 형태의 조건부 로직은 코드 수정 횟수가 늘어날수록 골칫 거리로 전략하기 쉽다.
+
+이런 경우에는 프로그래밍 언어(객체지향)가 제공하는 구조적인 요소로 해결할 수 있는데, 이를 **조건부 로직을 다형성으로 바꾸기**라고 이름을 붙여본다.
+
+```java
+public class CalculatorFactory {
+    public static PerformanceCalculator createPerformanceCalculator(EnrichPerformance performance) {
+        switch(performance.getPlay().getType()) {
+            case "tragedy":
+                return new TradegyCalculator(performance);
+            case "comedy":
+                return new ComedyCalculator(performance);
+            default:
+                throw new IllegalArgumentException("알 수 없는 장르: " + performance.getPlay().getType());
+        }
+    }
+}
+
+public class TradegyCalculator extends PerformanceCalculator{ ... }
+public class ComedyCalculator extends PerformanceCalculator{ ... }
+```
+
+위와 같이, 타입에 따라 다른 계산기 코드를 갖는 switch-case 문을 만들고 이를 사용하면 다형성에 따른 코드 작성이 가능하다. 
