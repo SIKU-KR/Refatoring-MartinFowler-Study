@@ -8,10 +8,16 @@ import java.util.List;
 public class Statement {
 
     public String statement(Invoice invoice, HashMap<String, Play> plays) {
+        return renderPlainText(createStatementData(invoice, plays));
+    }
+
+    private StatementData createStatementData(Invoice invoice, HashMap<String, Play> plays) {
         StatementData statementData = new StatementData();
         statementData.setCustomer(invoice.getCustomer());
         statementData.setPerformances(invoice.getPerformances(plays));
-        return renderPlainText(statementData);
+        statementData.setTotalAmount(totalAmount(statementData.getPerformances()));
+        statementData.setTotalVolumeCredits(totalVolumeCredits(statementData.getPerformances()));
+        return statementData;
     }
 
     private String renderPlainText(StatementData statementData) {
@@ -19,8 +25,8 @@ public class Statement {
         for (EnrichPerformance performance : statementData.getPerformances()) {
             result += "  " + performance.getPlay().getName() + ": $" + usd(performance.getAmount()) + " (" + performance.getAudience() + "석)\n";
         }
-        result += "총액: $" + usd(totalAmount(statementData.getPerformances())) + "\n";
-        result += "적립 포인트: " + totalVolumeCredits(statementData.getPerformances()) + "점\n";
+        result += "총액: $" + usd(statementData.getTotalAmount()) + "\n";
+        result += "적립 포인트: " + statementData.getTotalVolumeCredits() + "점\n";
         return result;
     }
 
