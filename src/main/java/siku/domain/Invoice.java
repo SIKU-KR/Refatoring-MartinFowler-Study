@@ -1,6 +1,6 @@
 package siku.domain;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class Invoice {
@@ -8,7 +8,8 @@ public class Invoice {
     private List<Performance> performances;
 
     // 기본 생성자
-    public Invoice() {}
+    public Invoice() {
+    }
 
     public Invoice(String customer, List<Performance> performances) {
         this.customer = customer;
@@ -23,8 +24,12 @@ public class Invoice {
         this.customer = customer;
     }
 
-    public List<Performance> getPerformances() {
-        return performances;
+    public List<EnrichPerformance> getPerformances(HashMap<String, Play> plays) {
+        return performances.stream()
+                .map(performance -> {
+                    EnrichPerformance enrichPerformance = new EnrichPerformance(performance, plays);
+                    return enrichPerformance;
+                }).toList();
     }
 
     public void setPerformances(List<Performance> performances) {

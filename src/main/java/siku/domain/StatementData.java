@@ -6,7 +6,7 @@ import java.util.List;
 public class StatementData {
 
     String customer = "";
-    List<Performance> performances = new ArrayList<>();
+    List<EnrichPerformance> performances = new ArrayList<>();
 
     public StatementData() {
     }
@@ -19,11 +19,11 @@ public class StatementData {
         this.customer = customer;
     }
 
-    public List<Performance> getPerformances() {
+    public List<EnrichPerformance> getPerformances() {
         return performances;
     }
 
-    public void setPerformances(List<Performance> performances) {
+    public void setPerformances(List<EnrichPerformance> performances) {
         this.performances = performances;
     }
 }
