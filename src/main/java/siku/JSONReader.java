@@ -9,10 +9,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
-public class IO {
+public class JSONReader {
     String path;
 
-    IO(String path) {
+    JSONReader(String path) {
         this.path = path;
     }
 
