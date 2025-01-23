@@ -1,85 +1,43 @@
 package siku;
 
+import siku.domain.EnrichPerformance;
 import siku.domain.Invoice;
-import siku.domain.Performance;
 import siku.domain.Play;
+import siku.domain.StatementData;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class Statement {
 
-    List<Invoice> invoices;
-    HashMap<String, Play> plays;
-
-    public Statement(List<Invoice> invoices, HashMap<String, Play> plays) {
-        this.invoices = invoices;
-        this.plays = plays;
+    public String statement(Invoice invoice, HashMap<String, Play> plays) {
+        return renderPlainText(StatementDataFactory.createStatementData(invoice, plays));
     }
 
-    public String run() {
-        String result = "";
-        for (Invoice invoice : invoices) {
-            result += "청구 내역 (고객명: " + invoice.getCustomer() + ")\n";
-            for (Performance performance : invoice.getPerformances()) {
-                {
-                    result += "  " + playFor(performance).getName() + ": $" + usd(amountFor(performance)) + " (" + performance.getAudience() + "석)\n";
-                }
-            }
-            result += "총액: $" + usd(totalAmount(invoice.getPerformances())) + "\n";
-            result += "적립 포인트: " + totalVolumeCredits(invoice.getPerformances()) + "점\n";
+    private String renderPlainText(StatementData statementData) {
+        String result = "청구 내역 (고객명: " + statementData.getCustomer() + ")\n";
+        for (EnrichPerformance performance : statementData.getPerformances()) {
+            result += "  " + performance.getPlay().getName() + ": $" + usd(performance.getAmount()) + " (" + performance.getAudience() + "석)\n";
         }
+        result += "총액: $" + usd(statementData.getTotalAmount()) + "\n";
+        result += "적립 포인트: " + statementData.getTotalVolumeCredits() + "점\n";
         return result;
     }
 
-    private int totalAmount(List<Performance> performances) {
-        int result = 0;
-        for (Performance performance : performances) {
-            result += amountFor(performance);
-        }
-        return result;
+    public String htmlStatement(Invoice invoice, HashMap<String, Play> plays) {
+        return renderHtml(StatementDataFactory.createStatementData(invoice, plays));
     }
 
-    private int totalVolumeCredits(List<Performance> performances) {
-        int result = 0;
-        for (Performance performance : performances) {
-            result += volumeCreditsFor(performance);
+    private String renderHtml(StatementData statementData) {
+        String result = "<h1>청구 내역 (고객명: " + statementData.getCustomer() + ")</h1>\n";
+        result += "<table>\n";
+        result += "<tr><th>연극</th><th>좌석 수</th><th>금액</th></tr>\n";
+        for (EnrichPerformance performance : statementData.getPerformances()) {
+            result += "<tr><td>" + performance.getPlay().getName() + "</td><td>" + performance.getAudience() + "</td>";
+            result += "<td>" + usd(performance.getAmount()) + "</td></tr>\n";
         }
-        return result;
-    }
-
-    private int amountFor(Performance aPerformance) {
-        int result = 0;
-        switch (playFor(aPerformance).getType()) {
-            case "tragedy":
-                result = 40000;
-                if (aPerformance.getAudience() > 30) {
-                    result += 1000 * (aPerformance.getAudience() - 30);
-                }
-                break;
-            case "comedy":
-                result = 30000;
-                if (aPerformance.getAudience() > 20) {
-                    result += 10000 + 500 * (aPerformance.getAudience() - 20);
-                }
-                result += 300 * aPerformance.getAudience();
-                break;
-            default:
-                throw new IllegalArgumentException("알 수 없는 장르: " + playFor(aPerformance).getType());
-        }
-        return result;
-    }
-
-    private Play playFor(Performance aPerformance) {
-        return this.plays.get(aPerformance.getPlayID());
-    }
-
-    private int volumeCreditsFor(Performance aPerformance) {
-        int result = 0;
-        result += Math.max(aPerformance.getAudience() - 30, 0);
-        if ("comedy".equals(playFor(aPerformance).getType())) {
-            result += Math.floorDiv(aPerformance.getAudience(), 5);
-        }
+        result += "</table>\n";
+        result += "<p>총액: <em>" + usd(statementData.getTotalAmount()) + "</em></p>\n";
+        result += "<p>적립 포인트: <em>" + statementData.getTotalVolumeCredits() + "</em>점</p>\n";
         return result;
     }
 
