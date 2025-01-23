@@ -1,23 +1,16 @@
 package siku;
 
-import siku.domain.*;
+import siku.domain.EnrichPerformance;
+import siku.domain.Invoice;
+import siku.domain.Play;
+import siku.domain.StatementData;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class Statement {
 
     public String statement(Invoice invoice, HashMap<String, Play> plays) {
-        return renderPlainText(createStatementData(invoice, plays));
-    }
-
-    private StatementData createStatementData(Invoice invoice, HashMap<String, Play> plays) {
-        StatementData statementData = new StatementData();
-        statementData.setCustomer(invoice.getCustomer());
-        statementData.setPerformances(invoice.getPerformances(plays));
-        statementData.setTotalAmount(totalAmount(statementData.getPerformances()));
-        statementData.setTotalVolumeCredits(totalVolumeCredits(statementData.getPerformances()));
-        return statementData;
+        return renderPlainText(StatementDataFactory.createStatementData(invoice, plays));
     }
 
     private String renderPlainText(StatementData statementData) {
@@ -27,22 +20,6 @@ public class Statement {
         }
         result += "총액: $" + usd(statementData.getTotalAmount()) + "\n";
         result += "적립 포인트: " + statementData.getTotalVolumeCredits() + "점\n";
-        return result;
-    }
-
-    private int totalAmount(List<EnrichPerformance> performances) {
-        int result = 0;
-        for (EnrichPerformance performance : performances) {
-            result += performance.getAmount();
-        }
-        return result;
-    }
-
-    private int totalVolumeCredits(List<EnrichPerformance> performances) {
-        int result = 0;
-        for (EnrichPerformance performance : performances) {
-            result += performance.getVolumeCredits();
-        }
         return result;
     }
 
