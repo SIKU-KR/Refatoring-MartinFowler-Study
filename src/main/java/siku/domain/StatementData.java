@@ -5,8 +5,8 @@ import java.util.List;
 
 public class StatementData {
 
-    String customer = "";
-    List<EnrichPerformance> performances = new ArrayList<>();
+    String customer;
+    List<EnrichPerformance> performances;
 
     public StatementData() {
     }

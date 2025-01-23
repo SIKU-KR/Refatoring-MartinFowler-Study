@@ -11,20 +11,20 @@ public class Statement {
         StatementData statementData = new StatementData();
         statementData.setCustomer(invoice.getCustomer());
         statementData.setPerformances(invoice.getPerformances(plays));
-        return renderPlainText(statementData, plays);
+        return renderPlainText(statementData);
     }
 
-    private String renderPlainText(StatementData statementData, HashMap<String, Play> plays) {
+    private String renderPlainText(StatementData statementData) {
         String result = "청구 내역 (고객명: " + statementData.getCustomer() + ")\n";
         for (EnrichPerformance performance : statementData.getPerformances()) {
             result += "  " + performance.getPlay().getName() + ": $" + usd(performance.getAmount()) + " (" + performance.getAudience() + "석)\n";
         }
-        result += "총액: $" + usd(totalAmount(statementData.getPerformances(), plays)) + "\n";
-        result += "적립 포인트: " + totalVolumeCredits(statementData.getPerformances(), plays) + "점\n";
+        result += "총액: $" + usd(totalAmount(statementData.getPerformances())) + "\n";
+        result += "적립 포인트: " + totalVolumeCredits(statementData.getPerformances()) + "점\n";
         return result;
     }
 
-    private int totalAmount(List<EnrichPerformance> performances, HashMap<String, Play> plays) {
+    private int totalAmount(List<EnrichPerformance> performances) {
         int result = 0;
         for (EnrichPerformance performance : performances) {
             result += performance.getAmount();
@@ -32,7 +32,7 @@ public class Statement {
         return result;
     }
 
-    private int totalVolumeCredits(List<EnrichPerformance> performances, HashMap<String, Play> plays) {
+    private int totalVolumeCredits(List<EnrichPerformance> performances) {
         int result = 0;
         for (EnrichPerformance performance : performances) {
             result += performance.getVolumeCredits();
