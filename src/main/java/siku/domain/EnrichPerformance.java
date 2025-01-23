@@ -1,5 +1,7 @@
 package siku.domain;
 
+import siku.PerformanceCalculator;
+
 import java.util.HashMap;
 
 public class EnrichPerformance extends Performance{
@@ -12,8 +14,9 @@ public class EnrichPerformance extends Performance{
         this.setPlayID(performance.getPlayID());
         this.setAudience(performance.getAudience());
         this.play = this.playFor(plays);
-        this.amount = this.amountFor();
-        this.volumeCredits = this.volumeCreditsFor();
+        PerformanceCalculator calculator = new PerformanceCalculator(this);
+        this.amount = calculator.amountFor();
+        this.volumeCredits = calculator.volumeCreditsFor();
     }
 
     public Play getPlay(){
@@ -32,34 +35,5 @@ public class EnrichPerformance extends Performance{
         return plays.get(getPlayID());
     }
 
-    private int amountFor() {
-        int result;
-        switch (getPlay().getType()) {
-            case "tragedy":
-                result = 40000;
-                if (getAudience() > 30) {
-                    result += 1000 * (getAudience() - 30);
-                }
-                break;
-            case "comedy":
-                result = 30000;
-                if (getAudience() > 20) {
-                    result += 10000 + 500 * (getAudience() - 20);
-                }
-                result += 300 * getAudience();
-                break;
-            default:
-                throw new IllegalArgumentException("알 수 없는 장르: " + this.play.getType());
-        }
-        return result;
-    }
 
-    private int volumeCreditsFor() {
-        int result = 0;
-        result += Math.max(getAudience() - 30, 0);
-        if ("comedy".equals(play.getType())) {
-            result += Math.floorDiv(getAudience(), 5);
-        }
-        return result;
-    }
 }
