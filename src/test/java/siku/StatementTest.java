@@ -7,12 +7,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class StatementTest {
 
     @Test
-    void testRun(){
+    void testStatement(){
         // given
         IO io = new IO("src/data/");
-        Statement statement = new Statement(io.readPlays());
+        Statement statement = new Statement();
         // when
-        String result = statement.run(io.readInvoices().get(0));
+        String result = statement.statement(io.readInvoices().get(0), io.readPlays());
         // then
         assertTrue(result.contains("청구 내역 (고객명: BigCo)"));
         assertTrue(result.contains("Hamlet: $650.00 (55석)"));
