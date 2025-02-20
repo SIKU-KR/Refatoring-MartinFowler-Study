@@ -1,6 +1,5 @@
-package siku.domain;
+package chapter1.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class StatementData {

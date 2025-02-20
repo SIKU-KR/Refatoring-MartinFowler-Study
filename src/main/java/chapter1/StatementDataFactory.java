@@ -1,9 +1,9 @@
-package siku;
+package chapter1;
 
-import siku.domain.EnrichPerformance;
-import siku.domain.Invoice;
-import siku.domain.Play;
-import siku.domain.StatementData;
+import chapter1.domain.EnrichPerformance;
+import chapter1.domain.Invoice;
+import chapter1.domain.Play;
+import chapter1.domain.StatementData;
 
 import java.util.HashMap;
 import java.util.List;

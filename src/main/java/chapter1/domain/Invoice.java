@@ -1,4 +1,4 @@
-package siku.domain;
+package chapter1.domain;
 
 import java.util.HashMap;
 import java.util.List;
