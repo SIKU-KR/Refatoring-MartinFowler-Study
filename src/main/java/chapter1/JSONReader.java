@@ -1,9 +1,9 @@
-package siku;
+package chapter1;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import siku.domain.Invoice;
-import siku.domain.Play;
+import chapter1.domain.Invoice;
+import chapter1.domain.Play;
 
 import java.io.File;
 import java.util.HashMap;

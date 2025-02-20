@@ -1,7 +1,7 @@
-package siku.domain;
+package chapter1.domain;
 
-import siku.CalculatorFactory;
-import siku.calculator.PerformanceCalculator;
+import chapter1.CalculatorFactory;
+import chapter1.calculator.PerformanceCalculator;
 
 import java.util.HashMap;
 

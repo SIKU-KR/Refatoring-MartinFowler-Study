@@ -1,4 +1,4 @@
-package siku.domain;
+package chapter1.domain;
 
 public class Performance {
     private String playID;

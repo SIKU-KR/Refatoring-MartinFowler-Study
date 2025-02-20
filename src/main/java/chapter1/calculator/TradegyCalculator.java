@@ -1,6 +1,6 @@
-package siku.calculator;
+package chapter1.calculator;
 
-import siku.domain.EnrichPerformance;
+import chapter1.domain.EnrichPerformance;
 
 public class TradegyCalculator extends PerformanceCalculator{
 
